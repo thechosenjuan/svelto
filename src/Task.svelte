@@ -2,8 +2,12 @@
   export let task;
   export let index;
   export let id;
+  export let deleteHandler = () => {};
+  export let editHandler = () => {};
 
   let showIcons = false;
+  let showEditBox = false;
+  let inputValue = task;
 
   const handleMouseEnter = () => {
     showIcons = true;
@@ -17,11 +21,22 @@
     e.dataTransfer.effectAllowed = "move";
   };
 
-  const handleTaskEdit = (e) => {
-    console.log("this is the edit event", e.target);
+  const showEditBoxHandler = () => {
+    showIcons = false;
+    showEditBox = true;
+  };
+  const handleTaskEdit = (value) => {
+    if (value.length > 0) {
+      editHandler(index, value);
+      showEditBox = false;
+    }
   };
   const handleTaskDelete = (e) => {
-    console.log("I should be DELETING");
+    deleteHandler(index);
+  };
+
+  const handleCloseEditBox = () => {
+    showEditBox = false;
   };
 </script>
 
@@ -34,9 +49,10 @@
   on:mouseleave={handleMouseLeave}
 >
   <div class="task__name">{task}</div>
+
   {#if showIcons}
     <div class="task__icons">
-      <span class="icon__container" on:click={handleTaskEdit}>
+      <span class="icon__container" on:click={showEditBoxHandler}>
         <svg
           width="24"
           height="24"
@@ -72,19 +88,34 @@
       </span>
     </div>
   {/if}
+  {#if showEditBox}
+    <div>
+      <input type="text" bind:value={inputValue} class="task-edit__input" />
+      <button on:click={handleTaskEdit(inputValue)}>Edit</button>
+      <button on:click={handleCloseEditBox}>Close</button>
+    </div>
+  {/if}
 </div>
 
 <style>
   .task__container {
     padding: 5px;
     font-size: 0.8rem;
-    display: flex;
-    justify-content: space-between;
+    /* display: flex;
+    justify-content: space-between; */
     min-height: 30px;
     border-bottom: 1px solid #888282d1;
   }
+  .task__icons {
+    display: block;
+    float: right;
+  }
+  .task-edit__input {
+    display: block;
+  }
   .icon__container {
     display: inline-block;
+
     min-height: 24px;
     padding-left: 5px;
     padding-right: 5px;
@@ -96,5 +127,6 @@
   }
   .task__name {
     margin-top: 5px;
+    display: inline-block;
   }
 </style>

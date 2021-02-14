@@ -29,11 +29,16 @@
     // e.target.insertAdjacentElement("afterend", document.getElementById(data));
   };
 
-  const updateTaskFromList = () => {
+  const updateTaskFromList = (index, newValue) => {
+    tasks.splice(index, 1, newValue);
+    tasks = tasks;
     // the function will be called from child - Task
     // I need to pass 2 ID's -> one for the task, one for the list
   };
-  const deleteTaskFromList = () => {};
+  const deleteTaskFromList = (index) => {
+    tasks.splice(index, 1);
+    tasks = tasks;
+  };
 </script>
 
 <div class="list" tabindex="0">
@@ -48,7 +53,13 @@
     id={`list--${id}`}
   >
     {#each tasks as task, index}
-      <Task {task} {index} {id} />
+      <Task
+        {task}
+        {index}
+        {id}
+        editHandler={updateTaskFromList}
+        deleteHandler={deleteTaskFromList}
+      />
     {/each}
   </div>
 
